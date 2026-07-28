@@ -3,8 +3,9 @@ import session from "express-session";
 import "dotenv/config";
 
 import usuarioRouter from "./routes/usuario.routes.js";
-import sesionRouter from "./routes/sesion.routes.js";
+import authRouter from "./routes/auth.routes.js";
 import aplicacionRouter from "./routes/aplicacion.routes.js";
+import productoRouter from "./routes/producto.routes.js";
 
 const app = express();
 
@@ -19,8 +20,9 @@ app.use(
 );
 
 app.use("/api/usuario", usuarioRouter);
-app.use("/api/auth", sesionRouter);
+app.use("/api/auth", authRouter);
 app.use("/api/aplicaciones", aplicacionRouter);
+app.use("/api/productos", productoRouter);
 
 const puerto = process.env.PORT;
 
