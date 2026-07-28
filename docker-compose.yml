@@ -1,27 +1,38 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: mysql_appnode
-    restart: always
+    container_name: api_access_hub_mysql
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: appnode
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: api_access_hub
+      MYSQL_USER: api_user
+      MYSQL_PASSWORD: api_password
     ports:
       - "3307:3306"
     volumes:
-      - mysql_appnode_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot123"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin_appnode
-    restart: always
+    image: phpmyadmin:latest
+    container_name: api_access_hub_phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root123
     ports:
       - "8080:80"
-    depends_on:
-      - mysql
 
 volumes:
-  mysql_appnode_data:
+  mysql_data:
