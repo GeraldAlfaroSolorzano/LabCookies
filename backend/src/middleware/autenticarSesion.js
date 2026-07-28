@@ -1,11 +1,9 @@
-export function autenticarSesion(req, res, next){
-    if (!req.session || !req.session.usuario) {
+export const autenticarSesion = (req, res, next) => {
+    if (!req.session.usuario) {
         return res.status(401).json({
-            mensaje: "Debe iniciar sesion para acceder a este recurso"
+            mensaje: "Usuario no autenticado"
         });
     }
 
-    req.usuario = req.session.usuario;
-
     next();
-}
+};
